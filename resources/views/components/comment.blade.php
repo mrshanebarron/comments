@@ -31,10 +31,10 @@
         {{ $slot }}
 
         {{-- Replies --}}
-        @if($comment->replies->count() > 0 && $depth < config('ld-comments.max_depth', 3))
+        @if($comment->replies->count() > 0 && $depth < config('sb-comments.max_depth', 3))
             <div class="mt-4 space-y-4">
                 @foreach($comment->replies as $reply)
-                    <x-ld-comment :comment="$reply" :depth="$depth + 1" />
+                    <x-sb-comment :comment="$reply" :depth="$depth + 1" />
                 @endforeach
             </div>
         @endif

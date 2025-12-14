@@ -18,6 +18,6 @@ class CommentForm extends Component
 
     public function render(): View
     {
-        return view('ld-comments::components.comment-form');
+        return view('sb-comments::components.comment-form');
     }
 }

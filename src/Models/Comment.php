@@ -21,7 +21,7 @@ class Comment extends Model
     public function __construct(array $attributes = [])
     {
         parent::__construct($attributes);
-        $this->setTable(config('ld-comments.table', 'comments'));
+        $this->setTable(config('sb-comments.table', 'comments'));
     }
 
     public function commentable(): MorphTo
@@ -31,7 +31,7 @@ class Comment extends Model
 
     public function user(): BelongsTo
     {
-        return $this->belongsTo(config('ld-comments.user_model'));
+        return $this->belongsTo(config('sb-comments.user_model'));
     }
 
     public function parent(): BelongsTo
@@ -84,7 +84,7 @@ class Comment extends Model
 
     public function canReply(): bool
     {
-        $maxDepth = config('ld-comments.max_depth');
+        $maxDepth = config('sb-comments.max_depth');
 
         if ($maxDepth === null) {
             return true;
@@ -95,11 +95,11 @@ class Comment extends Model
 
     public function canEdit(): bool
     {
-        if (!config('ld-comments.editable')) {
+        if (!config('sb-comments.editable')) {
             return false;
         }
 
-        $editWindow = config('ld-comments.edit_window');
+        $editWindow = config('sb-comments.edit_window');
 
         if ($editWindow === null) {
             return true;
@@ -110,6 +110,6 @@ class Comment extends Model
 
     public function canDelete(): bool
     {
-        return config('ld-comments.deletable', true);
+        return config('sb-comments.deletable', true);
     }
 }

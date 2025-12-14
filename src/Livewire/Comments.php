@@ -25,23 +25,23 @@ class Comments extends Component
     {
         $this->commentableType = $commentableType;
         $this->commentableId = $commentableId;
-        $this->sort = config('ld-comments.default_sort', 'newest');
+        $this->sort = config('sb-comments.default_sort', 'newest');
     }
 
     public function addComment(): void
     {
         $this->validate([
             'body' => 'required|min:1',
-            'guestName' => config('ld-comments.allow_guests') && config('ld-comments.guest_name_required') && !auth()->check()
+            'guestName' => config('sb-comments.allow_guests') && config('sb-comments.guest_name_required') && !auth()->check()
                 ? 'required|min:2'
                 : 'nullable',
         ]);
 
-        if (!config('ld-comments.allow_guests') && !auth()->check()) {
+        if (!config('sb-comments.allow_guests') && !auth()->check()) {
             return;
         }
 
-        $modelClass = config('ld-comments.model', Comment::class);
+        $modelClass = config('sb-comments.model', Comment::class);
 
         $modelClass::create([
             'commentable_type' => $this->commentableType,
@@ -50,7 +50,7 @@ class Comments extends Component
             'parent_id' => $this->replyingTo,
             'body' => $this->body,
             'guest_name' => $this->guestName,
-            'approved' => !config('ld-comments.moderation', false),
+            'approved' => !config('sb-comments.moderation', false),
         ]);
 
         $this->body = '';
@@ -74,7 +74,7 @@ class Comments extends Component
 
     public function edit(int $commentId): void
     {
-        $modelClass = config('ld-comments.model', Comment::class);
+        $modelClass = config('sb-comments.model', Comment::class);
         $comment = $modelClass::find($commentId);
 
         if ($comment && $this->canEdit($comment)) {
@@ -90,7 +90,7 @@ class Comments extends Component
             'editBody' => 'required|min:1',
         ]);
 
-        $modelClass = config('ld-comments.model', Comment::class);
+        $modelClass = config('sb-comments.model', Comment::class);
         $comment = $modelClass::find($this->editing);
 
         if ($comment && $this->canEdit($comment)) {
@@ -109,11 +109,11 @@ class Comments extends Component
 
     public function delete(int $commentId): void
     {
-        $modelClass = config('ld-comments.model', Comment::class);
+        $modelClass = config('sb-comments.model', Comment::class);
         $comment = $modelClass::find($commentId);
 
         if ($comment && $this->canDelete($comment)) {
-            if (config('ld-comments.soft_deletes', true)) {
+            if (config('sb-comments.soft_deletes', true)) {
                 $comment->delete();
             } else {
                 $comment->forceDelete();
@@ -129,7 +129,7 @@ class Comments extends Component
 
     protected function canEdit(Comment $comment): bool
     {
-        if (!config('ld-comments.editable')) {
+        if (!config('sb-comments.editable')) {
             return false;
         }
 
@@ -146,7 +146,7 @@ class Comments extends Component
 
     protected function canDelete(Comment $comment): bool
     {
-        if (!config('ld-comments.deletable')) {
+        if (!config('sb-comments.deletable')) {
             return false;
         }
 
@@ -159,14 +159,14 @@ class Comments extends Component
 
     public function render()
     {
-        $modelClass = config('ld-comments.model', Comment::class);
+        $modelClass = config('sb-comments.model', Comment::class);
 
         $query = $modelClass::where('commentable_type', $this->commentableType)
             ->where('commentable_id', $this->commentableId)
             ->root()
             ->with(['user', 'allReplies.user']);
 
-        if (config('ld-comments.moderation')) {
+        if (config('sb-comments.moderation')) {
             $query->approved();
         }
 
@@ -176,9 +176,9 @@ class Comments extends Component
             $query->oldest();
         }
 
-        $comments = $query->paginate(config('ld-comments.per_page', 10));
+        $comments = $query->paginate(config('sb-comments.per_page', 10));
 
-        return view('ld-comments::livewire.comments', [
+        return view('sb-comments::livewire.comments', [
             'comments' => $comments,
         ]);
     }

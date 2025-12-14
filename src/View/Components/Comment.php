@@ -15,6 +15,6 @@ class Comment extends Component
 
     public function render(): View
     {
-        return view('ld-comments::components.comment');
+        return view('sb-comments::components.comment');
     }
 }

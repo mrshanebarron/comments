@@ -12,24 +12,24 @@ class CommentsServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__.'/../config/ld-comments.php', 'ld-comments');
+        $this->mergeConfigFrom(__DIR__.'/../config/sb-comments.php', 'sb-comments');
     }
 
     public function boot(): void
     {
-        $this->loadViewsFrom(__DIR__.'/../resources/views', 'ld-comments');
+        $this->loadViewsFrom(__DIR__.'/../resources/views', 'sb-comments');
 
         $this->publishes([
-            __DIR__.'/../config/ld-comments.php' => config_path('ld-comments.php'),
-        ], 'ld-comments-config');
+            __DIR__.'/../config/sb-comments.php' => config_path('sb-comments.php'),
+        ], 'sb-comments-config');
 
         $this->publishes([
-            __DIR__.'/../resources/views' => resource_path('views/vendor/ld-comments'),
-        ], 'ld-comments-views');
+            __DIR__.'/../resources/views' => resource_path('views/vendor/sb-comments'),
+        ], 'sb-comments-views');
 
         $this->publishes([
             __DIR__.'/../database/migrations' => database_path('migrations'),
-        ], 'ld-comments-migrations');
+        ], 'sb-comments-migrations');
 
         // Register Blade components
         $this->loadViewComponentsAs('ld', [
@@ -40,7 +40,7 @@ class CommentsServiceProvider extends ServiceProvider
 
         // Register Livewire component if Livewire is installed
         if (class_exists(Livewire::class)) {
-            Livewire::component('ld-comments', \MrShaneBarron\Comments\Livewire\Comments::class);
+            Livewire::component('sb-comments', \MrShaneBarron\Comments\Livewire\Comments::class);
         }
     }
 }

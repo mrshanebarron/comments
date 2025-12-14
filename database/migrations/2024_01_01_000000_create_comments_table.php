@@ -8,11 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create(config('ld-comments.table', 'comments'), function (Blueprint $table) {
+        Schema::create(config('sb-comments.table', 'comments'), function (Blueprint $table) {
             $table->id();
             $table->morphs('commentable');
             $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
-            $table->foreignId('parent_id')->nullable()->constrained(config('ld-comments.table', 'comments'))->cascadeOnDelete();
+            $table->foreignId('parent_id')->nullable()->constrained(config('sb-comments.table', 'comments'))->cascadeOnDelete();
             $table->text('body');
             $table->string('guest_name')->nullable();
             $table->boolean('approved')->default(true);
@@ -27,6 +27,6 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::dropIfExists(config('ld-comments.table', 'comments'));
+        Schema::dropIfExists(config('sb-comments.table', 'comments'));
     }
 };

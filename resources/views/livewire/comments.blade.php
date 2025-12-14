@@ -1,8 +1,8 @@
-<div class="ld-comments space-y-6">
+<div class="sb-comments space-y-6">
     {{-- Comment Form --}}
-    @if(auth()->check() || config('ld-comments.allow_guests'))
+    @if(auth()->check() || config('sb-comments.allow_guests'))
         <form wire:submit="addComment" class="space-y-4">
-            @if(!auth()->check() && config('ld-comments.allow_guests'))
+            @if(!auth()->check() && config('sb-comments.allow_guests'))
                 <div>
                     <label for="guest_name" class="block text-sm font-medium text-gray-700">Name</label>
                     <input
@@ -61,7 +61,7 @@
     {{-- Comments List --}}
     <div class="space-y-4">
         @forelse($comments as $comment)
-            @include('ld-comments::livewire.partials.comment', ['comment' => $comment, 'depth' => 0])
+            @include('sb-comments::livewire.partials.comment', ['comment' => $comment, 'depth' => 0])
         @empty
             <p class="text-gray-500 text-center py-8">No comments yet. Be the first to comment!</p>
         @endforelse

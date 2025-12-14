@@ -53,7 +53,7 @@
 
         {{-- Actions --}}
         <div class="mt-2 flex items-center gap-4 text-sm">
-            @if($comment->canReply() && (auth()->check() || config('ld-comments.allow_guests')))
+            @if($comment->canReply() && (auth()->check() || config('sb-comments.allow_guests')))
                 <button
                     wire:click="reply({{ $comment->id }})"
                     class="text-gray-500 hover:text-gray-700"
@@ -111,10 +111,10 @@
         @endif
 
         {{-- Replies --}}
-        @if($comment->replies->count() > 0 && $depth < config('ld-comments.max_depth', 3))
+        @if($comment->replies->count() > 0 && $depth < config('sb-comments.max_depth', 3))
             <div class="mt-4 space-y-4">
                 @foreach($comment->replies as $reply)
-                    @include('ld-comments::livewire.partials.comment', ['comment' => $reply, 'depth' => $depth + 1])
+                    @include('sb-comments::livewire.partials.comment', ['comment' => $reply, 'depth' => $depth + 1])
                 @endforeach
             </div>
         @endif

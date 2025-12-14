@@ -20,14 +20,14 @@ class Comments extends Component
         $this->commentableType = get_class($model);
         $this->commentableId = $model->getKey();
 
-        $modelClass = config('ld-comments.model', Comment::class);
+        $modelClass = config('sb-comments.model', Comment::class);
 
         $query = $modelClass::where('commentable_type', $this->commentableType)
             ->where('commentable_id', $this->commentableId)
             ->root()
             ->with(['user', 'allReplies.user']);
 
-        if (config('ld-comments.moderation')) {
+        if (config('sb-comments.moderation')) {
             $query->approved();
         }
 
@@ -42,6 +42,6 @@ class Comments extends Component
 
     public function render(): View
     {
-        return view('ld-comments::components.comments');
+        return view('sb-comments::components.comments');
     }
 }

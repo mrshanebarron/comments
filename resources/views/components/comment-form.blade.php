@@ -5,7 +5,7 @@
         <input type="hidden" name="parent_id" value="{{ $parentId }}">
     @endif
 
-    @if(!auth()->check() && config('ld-comments.allow_guests'))
+    @if(!auth()->check() && config('sb-comments.allow_guests'))
         <div>
             <label for="guest_name" class="block text-sm font-medium text-gray-700">Name</label>
             <input
@@ -15,7 +15,7 @@
                 value="{{ old('guest_name') }}"
                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
                 placeholder="Your name"
-                @if(config('ld-comments.guest_name_required')) required @endif
+                @if(config('sb-comments.guest_name_required')) required @endif
             >
             @error('guest_name') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
         </div>

@@ -9,7 +9,7 @@ trait HasComments
 {
     public function comments(): MorphMany
     {
-        $model = config('ld-comments.model', Comment::class);
+        $model = config('sb-comments.model', Comment::class);
 
         return $this->morphMany($model, 'commentable');
     }
@@ -26,14 +26,14 @@ trait HasComments
 
     public function addComment(string $body, ?int $userId = null, ?int $parentId = null, ?string $guestName = null): Comment
     {
-        $model = config('ld-comments.model', Comment::class);
+        $model = config('sb-comments.model', Comment::class);
 
         return $this->comments()->create([
             'body' => $body,
             'user_id' => $userId,
             'parent_id' => $parentId,
             'guest_name' => $guestName,
-            'approved' => !config('ld-comments.moderation', false),
+            'approved' => !config('sb-comments.moderation', false),
         ]);
     }
 

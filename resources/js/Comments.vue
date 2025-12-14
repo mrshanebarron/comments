@@ -62,7 +62,7 @@
 import { ref } from 'vue';
 
 export default {
-  name: 'LdComments',
+  name: 'SbComments',
   props: {
     comments: { type: Array, default: () => [] },
     currentUser: { type: String, default: null },
