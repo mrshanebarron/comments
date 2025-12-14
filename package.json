@@ -1,0 +1,10 @@
+{
+    "name": "@mrshanebarron/comments",
+    "version": "1.0.0",
+    "description": "Comments/discussion component for Vue 3",
+    "main": "resources/js/index.js",
+    "module": "resources/js/index.js",
+    "peerDependencies": {
+        "vue": "^3.0.0"
+    }
+}
