@@ -1,18 +1,18 @@
-<div class="sb-comments space-y-6">
+<div style="display: flex; flex-direction: column; gap: 24px;">
     {{-- Comment Form --}}
     @if(auth()->check() || config('sb-comments.allow_guests'))
-        <form wire:submit="addComment" class="space-y-4">
+        <form wire:submit="addComment" style="display: flex; flex-direction: column; gap: 16px;">
             @if(!auth()->check() && config('sb-comments.allow_guests'))
                 <div>
-                    <label for="guest_name" class="block text-sm font-medium text-gray-700">Name</label>
+                    <label for="guest_name" style="display: block; font-size: 14px; font-weight: 500; color: #374151;">Name</label>
                     <input
                         type="text"
                         id="guest_name"
                         wire:model="guestName"
-                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                        style="margin-top: 4px; display: block; width: 100%; border-radius: 6px; border: 1px solid #d1d5db; padding: 8px 12px; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
                         placeholder="Your name"
                     >
-                    @error('guestName') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                    @error('guestName') <span style="color: #ef4444; font-size: 14px;">{{ $message }}</span> @enderror
                 </div>
             @endif
 
@@ -20,38 +20,40 @@
                 <textarea
                     wire:model="body"
                     rows="3"
-                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                    style="display: block; width: 100%; border-radius: 6px; border: 1px solid #d1d5db; padding: 8px 12px; font-size: 14px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); resize: vertical;"
                     placeholder="Write a comment..."
                 ></textarea>
-                @error('body') <span class="text-red-500 text-sm">{{ $message }}</span> @enderror
+                @error('body') <span style="color: #ef4444; font-size: 14px;">{{ $message }}</span> @enderror
             </div>
 
-            <div class="flex justify-end">
+            <div style="display: flex; justify-content: flex-end;">
                 <button
                     type="submit"
-                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    style="display: inline-flex; align-items: center; padding: 8px 16px; border: none; font-size: 14px; font-weight: 500; border-radius: 6px; color: white; background: #4f46e5; cursor: pointer; box-shadow: 0 1px 2px rgba(0,0,0,0.05);"
+                    onmouseover="this.style.background='#4338ca'"
+                    onmouseout="this.style.background='#4f46e5'"
                 >
                     Post Comment
                 </button>
             </div>
         </form>
     @else
-        <p class="text-gray-500 text-sm">Please <a href="{{ route('login') }}" class="text-indigo-600 hover:text-indigo-500">log in</a> to comment.</p>
+        <p style="color: #6b7280; font-size: 14px;">Please <a href="{{ route('login') }}" style="color: #4f46e5; text-decoration: none;" onmouseover="this.style.color='#4338ca'" onmouseout="this.style.color='#4f46e5'">log in</a> to comment.</p>
     @endif
 
     {{-- Sort Options --}}
-    @if($comments->count() > 1)
-        <div class="flex items-center gap-4 text-sm">
-            <span class="text-gray-500">Sort by:</span>
+    @if($this->comments->count() > 1)
+        <div style="display: flex; align-items: center; gap: 16px; font-size: 14px;">
+            <span style="color: #6b7280;">Sort by:</span>
             <button
                 wire:click="setSort('newest')"
-                @class(['font-medium', 'text-indigo-600' => $sort === 'newest', 'text-gray-600 hover:text-gray-900' => $sort !== 'newest'])
+                style="font-weight: 500; border: none; background: transparent; cursor: pointer; {{ $this->sort === 'newest' ? 'color: #4f46e5;' : 'color: #4b5563;' }}"
             >
                 Newest
             </button>
             <button
                 wire:click="setSort('oldest')"
-                @class(['font-medium', 'text-indigo-600' => $sort === 'oldest', 'text-gray-600 hover:text-gray-900' => $sort !== 'oldest'])
+                style="font-weight: 500; border: none; background: transparent; cursor: pointer; {{ $this->sort === 'oldest' ? 'color: #4f46e5;' : 'color: #4b5563;' }}"
             >
                 Oldest
             </button>
@@ -59,18 +61,18 @@
     @endif
 
     {{-- Comments List --}}
-    <div class="space-y-4">
-        @forelse($comments as $comment)
+    <div style="display: flex; flex-direction: column; gap: 16px;">
+        @forelse($this->comments as $comment)
             @include('sb-comments::livewire.partials.comment', ['comment' => $comment, 'depth' => 0])
         @empty
-            <p class="text-gray-500 text-center py-8">No comments yet. Be the first to comment!</p>
+            <p style="color: #6b7280; text-align: center; padding: 32px 0;">No comments yet. Be the first to comment!</p>
         @endforelse
     </div>
 
     {{-- Pagination --}}
-    @if($comments->hasPages())
-        <div class="mt-4">
-            {{ $comments->links() }}
+    @if($this->comments->hasPages())
+        <div style="margin-top: 16px;">
+            {{ $this->comments->links() }}
         </div>
     @endif
 </div>
