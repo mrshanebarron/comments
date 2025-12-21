@@ -53,6 +53,9 @@
 
         {{-- Actions --}}
         <div class="mt-2 flex items-center gap-4 text-sm">
+            {{-- Like button powered by sb-likes --}}
+            <x-sb-likes::blade-reactions :model="$comment" size="sm" :show-summary="false" />
+
             @if($comment->canReply() && (auth()->check() || config('sb-comments.allow_guests')))
                 <button
                     wire:click="reply({{ $comment->id }})"
