@@ -42,7 +42,7 @@
     @endif
 
     {{-- Sort Options --}}
-    @if($this->comments->count() > 1)
+    @if($comments->count() > 1)
         <div style="display: flex; align-items: center; gap: 16px; font-size: 14px;">
             <span style="color: #6b7280;">Sort by:</span>
             <button
@@ -62,7 +62,7 @@
 
     {{-- Comments List --}}
     <div style="display: flex; flex-direction: column; gap: 16px;">
-        @forelse($this->comments as $comment)
+        @forelse($comments as $comment)
             @include('sb-comments::livewire.partials.comment', ['comment' => $comment, 'depth' => 0])
         @empty
             <p style="color: #6b7280; text-align: center; padding: 32px 0;">No comments yet. Be the first to comment!</p>
@@ -70,9 +70,9 @@
     </div>
 
     {{-- Pagination --}}
-    @if($this->comments->hasPages())
+    @if($comments->hasPages())
         <div style="margin-top: 16px;">
-            {{ $this->comments->links() }}
+            {{ $comments->links() }}
         </div>
     @endif
 </div>
