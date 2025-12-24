@@ -5,6 +5,7 @@ namespace MrShaneBarron\Comments\Livewire;
 use Livewire\Component;
 use Livewire\WithPagination;
 use MrShaneBarron\Comments\Models\Comment;
+use Illuminate\Support\Facades\Cache;
 
 class Comments extends Component
 {
@@ -18,14 +19,49 @@ class Comments extends Component
     public string $editBody = '';
     public string $sort = 'newest';
     public ?string $guestName = null;
+    public bool $useCache = true;
+    public int $cacheTtl = 30; // minutes
 
     protected $listeners = ['commentAdded' => '$refresh'];
 
-    public function mount(string $commentableType, int $commentableId): void
-    {
+    public function mount(
+        string $commentableType,
+        int $commentableId,
+        bool $useCache = true,
+        int $cacheTtl = 30
+    ): void {
         $this->commentableType = $commentableType;
         $this->commentableId = $commentableId;
         $this->sort = config('sb-comments.default_sort', 'newest');
+        $this->useCache = $useCache;
+        $this->cacheTtl = $cacheTtl;
+    }
+
+    protected function getCacheKey(): string
+    {
+        return "comments.{$this->commentableType}.{$this->commentableId}.{$this->sort}.page." . ($this->paginators['page'] ?? 1);
+    }
+
+    public function clearCache(): void
+    {
+        $pattern = "comments.{$this->commentableType}.{$this->commentableId}.*";
+        Cache::forget($this->getCacheKey());
+
+        // Clear all pages for this commentable
+        for ($i = 1; $i <= 100; $i++) {
+            foreach (['newest', 'oldest'] as $sort) {
+                Cache::forget("comments.{$this->commentableType}.{$this->commentableId}.{$sort}.page.{$i}");
+            }
+        }
+    }
+
+    public static function clearCacheFor(string $commentableType, int $commentableId): void
+    {
+        for ($i = 1; $i <= 100; $i++) {
+            foreach (['newest', 'oldest'] as $sort) {
+                Cache::forget("comments.{$commentableType}.{$commentableId}.{$sort}.page.{$i}");
+            }
+        }
     }
 
     public function addComment(): void
@@ -57,6 +93,7 @@ class Comments extends Component
         $this->replyingTo = null;
         $this->guestName = null;
 
+        $this->clearCache();
         $this->dispatch('commentAdded');
     }
 
@@ -95,6 +132,7 @@ class Comments extends Component
 
         if ($comment && $this->canEdit($comment)) {
             $comment->update(['body' => $this->editBody]);
+            $this->clearCache();
         }
 
         $this->editing = null;
@@ -118,6 +156,7 @@ class Comments extends Component
             } else {
                 $comment->forceDelete();
             }
+            $this->clearCache();
         }
     }
 
@@ -159,6 +198,28 @@ class Comments extends Component
 
     public function render()
     {
+        $comments = $this->getComments();
+
+        return view('sb-comments::livewire.comments', [
+            'comments' => $comments,
+        ]);
+    }
+
+    protected function getComments()
+    {
+        if (!$this->useCache) {
+            return $this->fetchComments();
+        }
+
+        return Cache::remember(
+            $this->getCacheKey(),
+            now()->addMinutes($this->cacheTtl),
+            fn () => $this->fetchComments()
+        );
+    }
+
+    protected function fetchComments()
+    {
         $modelClass = config('sb-comments.model', Comment::class);
 
         $query = $modelClass::where('commentable_type', $this->commentableType)
@@ -176,10 +237,6 @@ class Comments extends Component
             $query->oldest();
         }
 
-        $comments = $query->paginate(config('sb-comments.per_page', 10));
-
-        return view('sb-comments::livewire.comments', [
-            'comments' => $comments,
-        ]);
+        return $query->paginate(config('sb-comments.per_page', 10));
     }
 }
