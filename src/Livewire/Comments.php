@@ -21,6 +21,8 @@ class Comments extends Component
     public ?string $guestName = null;
     public bool $useCache = true;
     public int $cacheTtl = 30; // minutes
+    public bool $allowGuests = true;
+    public bool $requireGuestName = false;
 
     protected $listeners = ['commentAdded' => '$refresh'];
 
@@ -28,13 +30,17 @@ class Comments extends Component
         string $commentableType,
         int $commentableId,
         bool $useCache = true,
-        int $cacheTtl = 30
+        int $cacheTtl = 30,
+        bool $allowGuests = true,
+        bool $requireGuestName = false
     ): void {
         $this->commentableType = $commentableType;
         $this->commentableId = $commentableId;
         $this->sort = config('sb-comments.default_sort', 'newest');
         $this->useCache = $useCache;
         $this->cacheTtl = $cacheTtl;
+        $this->allowGuests = $allowGuests;
+        $this->requireGuestName = $requireGuestName;
     }
 
     protected function getCacheKey(): string
@@ -68,12 +74,12 @@ class Comments extends Component
     {
         $this->validate([
             'body' => 'required|min:1',
-            'guestName' => config('sb-comments.allow_guests') && config('sb-comments.guest_name_required') && !auth()->check()
+            'guestName' => $this->requireGuestName && !auth()->check()
                 ? 'required|min:2'
                 : 'nullable',
         ]);
 
-        if (!config('sb-comments.allow_guests') && !auth()->check()) {
+        if (!$this->allowGuests && !auth()->check()) {
             return;
         }
 

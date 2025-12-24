@@ -1,10 +1,10 @@
 <div style="display: flex; flex-direction: column; gap: 24px;">
     {{-- Comment Form --}}
-    @if(auth()->check() || config('sb-comments.allow_guests'))
+    @if(auth()->check() || $this->allowGuests)
         <form wire:submit="addComment" style="display: flex; flex-direction: column; gap: 16px;">
-            @if(!auth()->check() && config('sb-comments.allow_guests'))
+            @if(!auth()->check() && $this->allowGuests)
                 <div>
-                    <label for="guest_name" style="display: block; font-size: 14px; font-weight: 500; color: #374151;">Name</label>
+                    <label for="guest_name" style="display: block; font-size: 14px; font-weight: 500; color: #374151;">Name {{ $this->requireGuestName ? '*' : '(optional)' }}</label>
                     <input
                         type="text"
                         id="guest_name"
