@@ -32,7 +32,7 @@ class CommentsServiceProvider extends ServiceProvider
         ], 'sb-comments-migrations');
 
         // Register Blade components
-        $this->loadViewComponentsAs('ld', [
+        $this->loadViewComponentsAs('sb', [
             Comments::class,
             Comment::class,
             CommentForm::class,
